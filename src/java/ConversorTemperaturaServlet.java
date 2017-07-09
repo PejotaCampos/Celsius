@@ -13,15 +13,20 @@ import modelo.Conversor;
 @WebServlet(urlPatterns = {"/converter"})
 public class ConversorTemperaturaServlet extends HttpServlet {
     
+    private final static String ERROR = "<html><h1 id=\\\"error\\\">Aconteceu um erro, por favor tente novamente apenas com números.</h1></html>";
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
        response.setContentType("text/html;charset=UTF-8");
        Conversor conversor = new Conversor();
-       request.setAttribute("texto", conversor.converter(Double.parseDouble(request.getParameter("valor")), request.getParameter("selecionado") ));
        
-       request.getRequestDispatcher("respostajsp.jsp").forward(request, response);
-       
+       try{
+            request.setAttribute("texto", conversor.converter(Double.parseDouble(request.getParameter("valor")), request.getParameter("selecionado") ));
+            request.getRequestDispatcher("respostajsp.jsp").forward(request, response);
+       }catch(NumberFormatException  e) {
+            response.getWriter().print(ERROR);
+       }
     }
 }
