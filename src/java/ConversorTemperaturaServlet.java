@@ -5,6 +5,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modelo.Conversor;
 /**
  *
  * @author Pedro
@@ -17,30 +18,10 @@ public class ConversorTemperaturaServlet extends HttpServlet {
             throws ServletException, IOException {
         
        response.setContentType("text/html;charset=UTF-8");
-       String[] selecionado = request.getParameterValues("selecionado");
-       double temperatura = Double.parseDouble(request.getParameter("valor"));;
-       double resposta;
-       String texto;
-       if(selecionado[0].equalsIgnoreCase("celsiusToFahrenheit")){
-            resposta = (temperatura*9/5)+32;
-            texto = ""+temperatura+  " Celsius = "+resposta+ " Fahrenheit.";
-        }
-        else{
-            resposta = ((temperatura - 32.0)*5)/9;
-            texto = ""+temperatura+  " Fahrenheit = "+resposta+ " Celsius.";
-            }
+       Conversor conversor = new Conversor();
+       request.setAttribute("texto", conversor.converter(Double.parseDouble(request.getParameter("valor")), request.getParameter("selecionado") ));
        
-       try (PrintWriter out = response.getWriter()) {
+       request.getRequestDispatcher("respostajsp.jsp").forward(request, response);
        
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Resultado</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>"+texto+" </h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
     }
 }
